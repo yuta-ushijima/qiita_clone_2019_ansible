@@ -1,0 +1,59 @@
+---
+- name: Install packages for ruby
+  become: yes
+  yum:
+    name: "{{ packages }}"
+    state: latest
+    lock_timeout: 180
+  vars:
+    packages:
+      - git-core
+      - gcc
+      - gcc-c++
+      - gdbm-devel
+      - libffi-devel
+      - libselinux-python
+      - libyaml-devel
+      - mysql
+      - mysql-devel
+      - ncurses-devel
+      - openssl-devel
+      - sqlite-devel
+      - readline-devel
+      - zlib-devel
+
+- name: Install rbenv
+  git:
+    repo: https://github.com/sstephenson/rbenv.git
+    dest: /usr/local/rbenv
+
+- name: Edit bashrc for through rbenv path
+  template:
+    src: roles/ruby/templates/rbenv_system.sh.j2
+    dest: /etc/profile.d/rbenv.sh
+
+- name: Copy .gemrc to ~/.gemrc to Avoid to Install rb-docs
+  become: yes
+  copy: 
+    src: roles/ruby/files/.gemrc
+    dest: ~/.gemrc
+
+- name: Install ruby-build as rbenv plugin
+  git:
+    repo: https://github.com/sstephenson/ruby-build.git
+    dest: /usr/local/rbenv/plugins/ruby-build
+
+- name: Install Ruby
+  shell: RUBY_CONFIGURE_OPTS=--disable-install-doc rbenv install -s {{ ruby_version }}
+  when: ruby.version not in installed_ruby.stdout
+
+- name: Set default Ruby version
+  notify: set global ruby version
+
+- name: Install bundler and so on
+  shell: bash -lc "gem install {{ packages }}"
+  vars:
+    items:
+      - rbenv-rehash
+      - bundler
+      - rails
