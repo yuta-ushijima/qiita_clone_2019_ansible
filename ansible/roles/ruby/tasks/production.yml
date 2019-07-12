@@ -1,8 +1,0 @@
----
-- name: Playbook for production
-  hosts: production
-  become: yes
-  vars_files:
-    - vars/common.yml
-  roles:
-    - ruby
