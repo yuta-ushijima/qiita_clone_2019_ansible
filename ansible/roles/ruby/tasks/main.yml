@@ -1,10 +1,8 @@
 ---
-- name: Install packages for ruby
+- name: Install packages
   become: yes
   yum:
     name: "{{ packages }}"
-    state: latest
-    lock_timeout: 180
   vars:
     packages:
       - git-core
@@ -27,7 +25,7 @@
     repo: https://github.com/sstephenson/rbenv.git
     dest: /usr/local/rbenv
 
-- name: Edit bashrc for through rbenv path
+- name: Edit bashrc
   template:
     src: roles/ruby/templates/rbenv_system.sh.j2
     dest: /etc/profile.d/rbenv.sh
@@ -35,25 +33,32 @@
 - name: Copy .gemrc to ~/.gemrc to Avoid to Install rb-docs
   become: yes
   copy: 
-    src: roles/ruby/files/.gemrc
+    src: .gemrc
     dest: ~/.gemrc
 
-- name: Install ruby-build as rbenv plugin
+- name: Install ruby-build as rbenv Plugin
   git:
     repo: https://github.com/sstephenson/ruby-build.git
     dest: /usr/local/rbenv/plugins/ruby-build
 
+- name: Check the Ruby Version Installed
+  shell: rbenv versions | grep "{{ ruby_version }}" | tr '*' ' ' | sed -e 's/\s\+//' | cut -f1 -d' '
+  register: installed_ruby
+
 - name: Install Ruby
-  shell: RUBY_CONFIGURE_OPTS=--disable-install-doc rbenv install -s {{ ruby_version }}
-  when: ruby.version not in installed_ruby.stdout
+  shell: bash -lc "RUBY_CONFIGURE_OPTS="--disable-install-rdoc" rbenv install -s {{ ruby_version }}"
+
+- name: Check Ruby Version
+  shell: bash -lc "rbenv version" | grep "{{ ruby_version }}" | cut -f1 -d' '
+  register: current_ruby_version
 
 - name: Set default Ruby version
-  notify: set global ruby version
+  shell: bash -lc "rbenv global {{ ruby_version }} && rbenv rehash"
+  when: ruby_version not in current_ruby_version.stdout
 
 - name: Install bundler and so on
-  shell: bash -lc "gem install {{ packages }}"
-  vars:
-    items:
-      - rbenv-rehash
-      - bundler
-      - rails
+  shell: bash -lc "gem install {{ item }}"
+  with_items:
+    - rbenv-rehash
+    - bundler -v {{ bundler_version }}
+    - rails
