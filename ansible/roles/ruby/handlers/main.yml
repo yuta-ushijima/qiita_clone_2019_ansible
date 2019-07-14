@@ -1,2 +1,0 @@
-- name: set global ruby version # フック処理用
-  shell: bash -lc "rbenv global {{ ruby.version }}" && rbenv rehash
