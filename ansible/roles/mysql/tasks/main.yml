@@ -81,3 +81,21 @@
     login_password: "{{ root_password }}"
     password: '{{ db_pass }}'
     check_implicit_admin: yes
+
+- name: Create user
+  mysql_user:
+    name: '{{ local_db_user }}'
+    password: '{{ db_pass }}'
+    host: '{{ hosts }}'
+    priv: '*.*:ALL,GRANT'
+    state: present
+  vars:
+    hosts:
+      - localhost
+      - '%'
+
+- name: Create database
+  mysql_db:
+    name: '{{ db_name }}'
+    state: present
+    encoding: utf8
