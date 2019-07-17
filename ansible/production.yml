@@ -6,5 +6,6 @@
     - vars/common.yml
   roles:
     - git
+    - nginx
     - mysql
     - ruby

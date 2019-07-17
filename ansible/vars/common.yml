@@ -4,3 +4,5 @@ db_pass: password
 db_user: root
 db_name: local
 local_db_user: local
+public_ip: 127.0.0.1
+application_name: qiita_clone_2019
