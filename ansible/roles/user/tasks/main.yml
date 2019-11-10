@@ -1,0 +1,13 @@
+---
+- name: Add Groups
+  group:
+    name: admin
+  with_items: '{{ group_list }}'
+
+- name: Add admin users
+  user:
+    name: admin
+    group: admin
+    password: "{{ password | password_hash('sha512') }}"
+    update_password: on_create
+  become: yes

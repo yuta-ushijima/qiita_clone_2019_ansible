@@ -3,12 +3,14 @@
   yum:
     name: http://nginx.org/packages/centos/7/noarch/RPMS/nginx-release-centos-7-0.el7.ngx.noarch.rpm
     state: present
+    lock_timeout: 180
   become: yes
 
 - name: Install nginx package
   yum:
     name: nginx
     state: latest
+    lock_timeout: 180
   become: yes
 
 - name: Put local.conf

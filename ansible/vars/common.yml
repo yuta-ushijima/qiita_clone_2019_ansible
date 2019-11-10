@@ -1,8 +1,24 @@
-ruby_version: 2.6.2
+ruby_version: 2.6.1
 bundler_version: 2.0.1
 db_pass: password
 db_user: root
 db_name: local
+password: password
 local_db_user: local
 public_ip: 127.0.0.1
 application_name: qiita_clone_2019
+group_list:
+  - { name: 'admin' }
+
+##############
+# For first attempt for a new server
+ansible_user: ec2-user
+ansible_ssh_private_key_file: ~/.ssh/yuta-ushijima.pem
+ansible_ssh_common_args: '-i ~/.ssh/yuta-ushijima.pem'
+#############
+
+##############
+# Use this once playbook's succeeded and ec2-user is no longer needed
+# remove_users:
+  # - { name: 'ec2-user' }
+#############

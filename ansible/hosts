@@ -1,2 +1,5 @@
-[production]
-qiita_clone_2019_ec2
+[staging-app]
+3.113.250.19
+
+[production-app]
+3.113.242.122
