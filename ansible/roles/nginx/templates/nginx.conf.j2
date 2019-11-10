@@ -55,14 +55,14 @@ http {
   #include /etc/nginx/conf.d/*.conf;
   
 	upstream unicorn {
-	  server unix:/var/www/{{ application_name }}/tmp/sockets/unicorn.sock fail_timeout=0;
+	  server unix:/var/www/{{ application_name }}/shared/tmp/sockets/unicorn.sock fail_timeout=0;
 	}
 
 	server {
 	  listen 80 default_server;
 
 	  server_name {{ public_ip }};
-	  root /var/www/{{ application_name }}/public;
+	  root /var/www/{{ application_name }}/current/public;
 	  access_log /var/log/nginx/{{ application_name }}_access.log;
 	  error_log /var/log/nginx/{{ application_name }}_error.log;
 
@@ -94,7 +94,7 @@ http {
 
       # For rails-assets
       location ^~ /assets/ {
-        root   /var/www/{{ application_name }}/public;
+        root   /var/www/{{ application_name }}/current/public;
       }
 
       error_page 404 /404.html;

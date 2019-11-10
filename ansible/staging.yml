@@ -1,0 +1,15 @@
+---
+- name: Playbook for staging
+  hosts: staging*
+  become: yes
+  vars_files:
+    - vars/common.yml
+  roles:
+  #  - common
+   - git
+  #  - nginx
+  #  - nodejs
+  #  - mysql
+  #  - ruby
+  #  - user
+  #  - vim

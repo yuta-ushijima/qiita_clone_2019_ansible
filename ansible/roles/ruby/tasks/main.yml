@@ -3,6 +3,7 @@
   become: yes
   yum:
     name: "{{ packages }}"
+    lock_timeout: 180
   vars:
     packages:
       - git-core
